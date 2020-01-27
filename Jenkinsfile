@@ -4,7 +4,7 @@ pipeline
 	environment
 	{
 		ssh_ip = "jenkins-docker"
-		ssh_ip_self = "playground"
+		ssh_ip_self = "deama85@playground"
 		number = "${env.BUILD_NUMBER}"
 	}
 
@@ -37,7 +37,7 @@ pipeline
 		{
 			steps
 			{
-				sh '''ssh -o StrictHostKeyChecking=no deama85@${ssh_ip} << EOF
+				sh '''ssh -o StrictHostKeyChecking=no ${ssh_ip} << EOF
 					cd /home/deama85
 					/home/deama85/google-cloud-sdk/bin/kubectl apply -f app.yaml
 				'''
