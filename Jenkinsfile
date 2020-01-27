@@ -3,8 +3,8 @@ pipeline
 	agent any 
 	environment
 	{
-		ssh_ip = "jenkins-docker"
-		ssh_ip_self = "deama85@playground"
+		ssh_ip = "deama85@playground"
+		ssh_ip_self = "jenkins-docker"
 		number = "${env.BUILD_NUMBER}"
 	}
 
