@@ -179,8 +179,8 @@
   - name: git clone project
     become_user: jenkins
     git:
-     repo: "https://github.com/deama/flaskMicroServer.git"
-     dest: ~/flaskMicroServer
+     repo: "https://github.com/deama/flaskAppTest.git"
+     dest: ~/flaskAppTest
 
 
 #################################################################################################################################
