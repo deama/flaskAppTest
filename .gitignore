@@ -1,0 +1,6 @@
+venv/
+flask_host/venv
+flask_generator_number/venv
+flask_generator_letter/venv
+flask_generator_sequence/venv
+flask_generator_prize/venv

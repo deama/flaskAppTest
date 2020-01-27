@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block body %}
+	<button id="{{ buttons[1] }}" onclick="window.location.href='{{ url_for("service1") }}'">{{ buttons[0] }} </button>
+	<button id="{{ buttons[2] }}" onclick="window.location.href='{{ url_for("service2") }}'">{{ buttons[1] }} </button>
+	<button id="{{ buttons[2] }}" onclick="window.location.href='{{ url_for("button0") }}'">{{ buttons[2] }} </button>
+	<button id="{{ buttons[3] }}" onclick="window.location.href='{{ url_for("button1") }}'">{{ buttons[3] }} </button>
+
+	<p>Sequence: {{ sequence }}</p>
+	<p>{{ prize }}</p>
+{% endblock %}

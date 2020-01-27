@@ -1,0 +1,186 @@
+---
+- hosts: jenkins-docker
+  become: true
+  tasks:
+  - name: setup cartificates
+    apt:
+     update_cache: true 
+     state: latest
+     name: apt-transport-https
+     name: ca-certificates
+     name: software-properties-common
+
+  - name: setup gpg key
+    apt_key:
+     state: present
+     url: "https://download.docker.com/linux/ubuntu/gpg"
+
+  - name: setup docker repo
+    apt_repository:
+     state: present
+     repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+
+  - name: install docker
+    apt:
+     update_cache: true
+     name: docker-ce
+
+  - name: install pip3
+    apt:
+     update_cache: true
+     name: python3-pip
+
+  - name: install docker via pip
+    pip:
+     executable: pip3
+     name: docker
+
+  - name: install jsondiff via pip
+    pip:
+     executable: pip3
+     name: jsondiff
+
+  - name: add user to docker group
+    user:
+     name: "deama85"
+     append: true
+     group: "docker"
+
+  - name: create jenkins user
+    user:
+     name: jenkins
+     shell: /bin/bash
+
+  - name: add jenkins to sudoers
+    lineinfile:
+     path: /etc/sudoers
+     state: present
+     line: "jenkins ALL=(ALL:ALL) NOPASSWD:ALL"
+
+  - name: add jenkins to docker group
+    user:
+     name: "jenkins"
+     append: true
+     group: "docker"
+
+
+  - name: Install docker-compose
+    apt:
+     name: docker-compose
+     state: present
+     update_cache: true
+    tags:
+     - docker
+
+  - name: setup MYSQL_USER
+    become_user: jenkins
+    lineinfile:
+     path: ~/.bashrc
+     state: present
+     insertbefore: "# If not running interactively, don't do anything"
+     line: "export MYSQL_USER='{{ lookup('env','MYSQL_USER') }}'"
+  - name: setup MYSQL_PASSWORD
+    become_user: jenkins
+    lineinfile:
+     path: ~/.bashrc
+     state: present
+     insertbefore: "# If not running interactively, don't do anything"
+     line: "export MYSQL_PASSWORD='{{ lookup('env','MYSQL_PASSWORD') }}'"
+  - name: setup MYSQL_HOST
+    become_user: jenkins
+    lineinfile:
+     path: ~/.bashrc
+     state: present
+     insertbefore: "# If not running interactively, don't do anything"
+     line: "export MYSQL_HOST='{{ lookup('env','MYSQL_HOST') }}'"
+  - name: setup MYSQL_DB
+    become_user: jenkins
+    lineinfile:
+     path: ~/.bashrc
+     state: present
+     insertbefore: "# If not running interactively, don't do anything"
+     line: "export MYSQL_DB='{{ lookup('env','MYSQL_DB') }}'"
+  - name: setup SECRET_KEY
+    become_user: jenkins
+    lineinfile:
+     path: ~/.bashrc
+     state: present
+     insertbefore: "# If not running interactively, don't do anything"
+     line: "export SECRET_KEY='{{ lookup('env','SECRET_KEY') }}'"
+  - name: setup MYSQL_DB_TEST
+    become_user: jenkins
+    lineinfile:
+     path: ~/.bashrc
+     state: present
+     insertbefore: "# If not running interactively, don't do anything"
+     line: "export MYSQL_DB_TEST='{{ lookup('env','MYSQL_DB_TEST') }}'"
+
+  - name: move daemon.json to remote host
+    copy:
+     src: ~/daemon.json
+     dest: /etc/docker/daemon.json
+
+  - name: restart docker service for daemon.json
+    service:
+     name: docker
+     state: restarted
+
+  - name: start jenkins container
+    docker_container:
+     name: jenkins
+     image: jenkins/jenkins:lts-alpine
+     volumes: 
+     - jenkins-volume:/var/jenkins_home/
+     published_ports:
+     - "80:8080"
+     
+  - name: start registry
+    docker_container:
+     name: registry
+     image: registry:2
+     volumes:
+     - registry-volume:/var/lib/registry
+     published_ports:
+     - "5000:5000"
+
+
+#### add to VM first, then will move to container
+  - name: create .ssh directory
+    become_user: jenkins
+    file:
+     path: ~/.ssh
+     state: directory
+     mode: "0700"
+
+  - name: move private key
+    become_user: jenkins
+    copy:
+     src: ~/.ssh/id_rsa
+     dest: ~/.ssh/id_rsa
+
+  - name: move public key
+    become_user: jenkins
+    copy:
+     src: ~/.ssh/id_rsa.pub
+     dest: ~/.ssh/authorized_keys
+#################################################
+
+  - name: create .ssh directory in container
+    become_user: jenkins
+    shell:
+     cmd: "docker exec jenkins mkdir -p /var/jenkins_home/.ssh/"
+
+  - name: copy private key into container
+    become_user: jenkins
+    shell:
+     cmd: "docker cp ~/.ssh/id_rsa jenkins:/var/jenkins_home/.ssh/id_rsa"
+
+
+  - name: git clone project
+    become_user: jenkins
+    git:
+     repo: "https://github.com/deama/flaskMicroServer.git"
+     dest: ~/flaskMicroServer
+
+
+#################################################################################################################################
