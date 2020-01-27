@@ -175,6 +175,11 @@
     shell:
      cmd: "docker cp ~/.ssh/id_rsa jenkins:/var/jenkins_home/.ssh/id_rsa"
 
+  - name: change id_rsa permission
+    become_user: jenkins
+    shell:
+     cmd: "docker exec --user root jenkins chown jenkins /var/jenkins_home/.ssh/id_rsa"
+
 
   - name: git clone project
     become_user: jenkins
