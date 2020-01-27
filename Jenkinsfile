@@ -3,7 +3,6 @@ pipeline
 	agent any 
 	environment
 	{
-		install_dir = "/opt/flask-app"
 		ssh_ip = "jenkins-docker"
 		ssh_ip_self = "playground"
 		number = "${env.BUILD_NUMBER}"
@@ -16,7 +15,7 @@ pipeline
 			steps 
 			{
 				sh '''ssh -o StrictHostKeyChecking=no ${ssh_ip_self} << EOF
-					cd ~/flaskMicroServer
+					cd ~/flaskAppTest
 					git pull
 				'''
 			}
@@ -26,8 +25,8 @@ pipeline
 			steps
 			{
 				sh '''ssh -o StrictHostKeyChecking=no ${ssh_ip_self} << EOF
-					cd ~/flaskMicroServer
-					git checkout updateBranch
+					cd ~/flaskAppTest
+					git checkout master
 					export BUILD_NUMBER="${number}"
 					docker-compose build
 					docker-compose push
