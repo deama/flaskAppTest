@@ -39,7 +39,7 @@ pipeline
 			{
 				sh '''ssh -o StrictHostKeyChecking=no ${ssh_ip} << EOF
 					cd /home/deama85
-					/home/deama85/google-cloud-sdk/bin/kubectl apply -f app.yaml
+					/home/deama85/google-cloud-sdk/bin/kubectl apply -f /home/deama85/flaskAppTest/kube/app.yaml
 				'''
 			}
 		}
