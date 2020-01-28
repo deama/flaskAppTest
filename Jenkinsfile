@@ -40,6 +40,7 @@ pipeline
 				sh '''ssh -o StrictHostKeyChecking=no ${ssh_ip} << EOF
 					cd /home/deama85
 					export BUILD_NUMBER="${number}"
+					sed "s/{{BUILD_NUMBER}}/$BUILD_NUMBER/g" /home/deama85/flaskAppTest/kube/app.yaml
 					sed "s/{{BUILD_NUMBER}}/$BUILD_NUMBER/g" /home/deama85/flaskAppTest/kube/app.yaml | /home/deama85/google-cloud-sdk/bin/kubectl apply -f -
 				'''
 			}
