@@ -1,0 +1,170 @@
+apiVersion: v1
+kind: Pod
+metadata:
+ name: nginx
+ labels: 
+  app: nginx
+spec:
+ containers:
+ - name: nginx
+   image: nginx:alpine
+   ports:
+   - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+spec:
+  selector:
+    app: nginx
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-host
+  labels:
+    app: flask-host
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-host
+  template:
+    metadata:
+      labels:
+        app: flask-host
+    spec:
+      containers:
+      - name: flask-host
+        image: jenkins-docker:5000/flask-host:build-${BUILD_NUMBER}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-number
+  labels:
+    app: flask-number
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-number
+  template:
+    metadata:
+      labels:
+        app: flask-number
+    spec:
+      containers:
+      - name: flask-number
+        image: jenkins-docker:5000/flask-number:build-${BUILD_NUMBER}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-letter
+  labels:
+    app: flask-letter
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-letter
+  template:
+    metadata:
+      labels:
+        app: flask-letter
+    spec:
+      containers:
+      - name: flask-letter
+        image: jenkins-docker:5000/flask-letter:build-${BUILD_NUMBER}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-sequence
+  labels:
+    app: flask-sequence
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-sequence
+  template:
+    metadata:
+      labels:
+        app: flask-sequence
+    spec:
+      containers:
+      - name: flask-sequence
+        image: jenkins-docker:5000/flask-sequence:build-${BUILD_NUMBER}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-prize
+  labels:
+    app: flask-prize
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flask-prize
+  template:
+    metadata:
+      labels:
+        app: flask-prize
+    spec:
+      containers:
+      - name: flask-number
+        image: jenkins-docker:5000/flask-prize:build-${BUILD_NUMBER}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-host
+spec:
+  selector:
+    app: flask-host
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-number
+spec:
+  selector:
+    app: flask-number
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-letter
+spec:
+  selector:
+    app: flask-letter
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-sequence
+spec:
+  selector:
+    app: flask-sequence
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-prize
+spec:
+  selector:
+    app: flask-prize
+  type: NodePort
