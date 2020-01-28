@@ -21,7 +21,7 @@ services:
 
  flask-host:
   container_name: flask-host
-  image: jenkins-docker:5000/flask-host:build-${BUILD_NUMBER}
+  image: registry:5000/flask-host:build-${BUILD_NUMBER}
   build:
    context: ./flask_host/
    args:
@@ -35,22 +35,22 @@ services:
 
  flask-number:
   container_name: flask-number
-  image: jenkins-docker:5000/flask-number:build-${BUILD_NUMBER}
+  image: registry:5000/flask-number:build-${BUILD_NUMBER}
   build: ./flask_generator_number/
 
 
  flask-letter:
   container_name: flask-letter
-  image: jenkins-docker:5000/flask-letter:build-${BUILD_NUMBER}
+  image: registry:5000/flask-letter:build-${BUILD_NUMBER}
   build: ./flask_generator_letter/
 
 
  flask-sequence:
   container_name: flask-sequence
-  image: jenkins-docker:5000/flask-sequence:build-${BUILD_NUMBER}
+  image: registry:5000/flask-sequence:build-${BUILD_NUMBER}
   build: ./flask_generator_sequence/
 
  flask-prize:
   container_name: flask-prize
-  image: jenkins-docker:5000/flask-prize:build-${BUILD_NUMBER}
+  image: registry:5000/flask-prize:build-${BUILD_NUMBER}
   build: ./flask_generator_prize/

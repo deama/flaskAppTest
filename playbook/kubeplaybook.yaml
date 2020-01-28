@@ -1,0 +1,76 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+  tasks:
+  - name: create .ssh directory in container
+    become_user: deama85
+    shell:
+     cmd: "/home/deama85/google-cloud-sdk/bin/kubectl exec jenkins mkdir -- -p /var/jenkins_home/.ssh/"
+
+  - name: copy private key into container
+    become_user: deama85
+    shell:
+     cmd: "/home/deama85/google-cloud-sdk/bin/kubectl cp ~/.ssh/id_rsa jenkins:/var/jenkins_home/.ssh/id_rsa"
+
+  - name: setup cartificates
+    apt:
+     update_cache: true 
+     state: latest
+     name: apt-transport-https
+     name: ca-certificates
+     name: software-properties-common
+
+  - name: setup gpg key
+    apt_key:
+     state: present
+     url: "https://download.docker.com/linux/ubuntu/gpg"
+
+  - name: setup docker repo
+    apt_repository:
+     state: present
+     repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
+
+  - name: install docker
+    apt:
+     update_cache: true
+     name: docker-ce
+
+  - name: install pip3
+    apt:
+     update_cache: true
+     name: python3-pip
+
+  - name: install docker via pip
+    pip:
+     executable: pip3
+     name: docker
+
+  - name: install jsondiff via pip
+    pip:
+     executable: pip3
+     name: jsondiff
+
+  - name: add user to docker group
+    user:
+     name: "deama85"
+     append: true
+     group: "docker"
+
+  - name: Install docker-compose
+    apt:
+     name: docker-compose
+     state: present
+     update_cache: true
+    tags:
+    - docker
+
+  - name: move daemon.json to remote host
+    copy:
+     src: ~/daemon.json
+     dest: /etc/docker/daemon.json
+
+  - name: restart docker service for daemon.json
+    service:
+     name: docker
+     state: restarted
