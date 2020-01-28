@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: flask-host
-        image: jenkins-docker:5000/flask-host:build-${BUILD_NUMBER}
+        image: jenkins-docker:5000/flask-host:build-{{BUILD_NUMBER}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -37,7 +37,7 @@ spec:
     spec:
       containers:
       - name: flask-number
-        image: jenkins-docker:5000/flask-number:build-${BUILD_NUMBER}
+        image: jenkins-docker:5000/flask-number:build-{{BUILD_NUMBER}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -57,7 +57,7 @@ spec:
     spec:
       containers:
       - name: flask-letter
-        image: jenkins-docker:5000/flask-letter:build-${BUILD_NUMBER}
+        image: jenkins-docker:5000/flask-letter:build-{{BUILD_NUMBER}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -77,7 +77,7 @@ spec:
     spec:
       containers:
       - name: flask-sequence
-        image: jenkins-docker:5000/flask-sequence:build-${BUILD_NUMBER}
+        image: jenkins-docker:5000/flask-sequence:build-{{BUILD_NUMBER}}
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -97,7 +97,7 @@ spec:
     spec:
       containers:
       - name: flask-number
-        image: jenkins-docker:5000/flask-prize:build-${BUILD_NUMBER}
+        image: jenkins-docker:5000/flask-prize:build-{{BUILD_NUMBER}}
 ---
 apiVersion: v1
 kind: Service
